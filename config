@@ -105,7 +105,7 @@ HOOK="${SCRIPTDIR}/hook.sh"
 #KEY_ALGO=secp384r1
 
 # E-mail to use during the registration (default: <unset>)
-CONTACT_EMAIL=jim@3e8.org
+CONTACT_EMAIL=jim@ursetto.com
 
 # Lockfile location, to prevent concurrent access (default: $BASEDIR/lock)
 #LOCKFILE="${BASEDIR}/lock"
