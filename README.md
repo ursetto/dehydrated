@@ -24,15 +24,15 @@ This will run daily from cron, and renew only when <= 30 days remain until expir
     # Generally no other config needs to be done (except possibly changing email in `config`).
     ln -s domains-3e8.txt domains.txt
 
-    # Register an account (make sure you set `CA=letsencrypt-test` in `config` while testing)
-
-    make register
-
     # Run setup, which will set up ./var, the common acme-challenge root in `/var/www/acme-challenge`,
     # and the sudo access. Manually configure nginx to respond to challenges,
     # usually by including snippets/acme.conf in your server blocks.
 
     make setup
+
+    # Register an account (make sure you set `CA=letsencrypt-test` in `config` while testing)
+
+    make register
 
     # Run a renewal 
 
