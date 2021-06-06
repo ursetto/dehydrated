@@ -93,7 +93,7 @@ deploy_cert() {
         sudo service postfix reload &&
         sudo service dovecot reload
     else
-        sudo service nginx reload
+        sudo service apache2 reload
     fi
 }
 
