@@ -87,8 +87,8 @@ Cons:
 
 - Bought out by apilayer, who also bought acme.sh. It is almost certain that (like acme.sh)
   they will change the default CA to ZeroSSL at some point.
-- Output is spammy, it poops to stdout even when it is not yet time to renew.
-  Will probably cause spurious cron emails.
+- Output is spammy, it poops to stdout even when it is not yet time to renew, causing
+  spurious daily cron emails. Mitigated with special processing in cron script. 
 - Per-domain config is in directories that don't exist until the cert is requested. Better
   to use a single config file.
 - Critical option WELLKNOWN cannot be overridden on command line. Need per-domain config or
