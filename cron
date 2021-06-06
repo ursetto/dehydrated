@@ -1,3 +1,51 @@
-#!/bin/sh
+#!/bin/bash
 
-su - letsencrypt -c '/opt/letsencrypt/dehydrated/dehydrated -c'
+# Daily cron script for dehydrated. This wraps the script to create running logs in $LOG.
+# It also suppresses stdout when it is not time to renew, so you don't get daily mails
+# from cron saying nothing was renewed. Note: if you have multiple domains, and they renew
+# on different days, your mails will still have some "Skipping renew" detritus.
+
+set -eu
+set -o pipefail
+
+LOG=/var/log/letsencrypt/dehydrated.log
+mkdir -p "$(dirname "$LOG")"
+
+outfile=$(mktemp)
+trap "rm -f $outfile" 0
+
+if su - letsencrypt -c '/opt/letsencrypt/dehydrated/dehydrated -c 2>&1' 2>&1 > "$outfile"; then
+    if grep 'Done!' "$outfile"; then
+        { echo; echo +++ $(date) "Renewal succeeded"; cat "$outfile"; } | tee -a "$LOG"
+        exit 0
+    else
+        { echo; echo +++ $(date) "Renewal deferred"; cat "$outfile"; } >> "$LOG"
+        exit 0
+    fi
+else
+    { echo; echo +++ $(date) "Renewal failed"; cat "$outfile"; } | tee -a "$LOG"
+    exit 1
+fi
+
+### Example output on success:
+
+# # INFO: Using main config file /opt/letsencrypt/dehydrated/config
+# Processing mail.3e8.org
+#  + Checking domain name(s) of existing cert... unchanged.
+#  + Checking expire date of existing cert...
+#  + Valid till Sep  3 02:17:25 2021 GMT (Longer than 30 days). Ignoring because renew was forced!
+#  + Signing domains...
+#  + Generating private key...
+#  + Generating signing request...
+#  + Requesting new certificate order from CA...
+#  + Received 1 authorizations URLs from the CA
+#  + Handling authorization for mail.3e8.org
+#  + Found valid authorization for mail.3e8.org
+#  + 0 pending challenge(s)
+#  + Requesting certificate...
+#  + Checking certificate...
+#  + Done!
+#  + Creating fullchain.pem...
+#  * Reloading Postfix configuration...
+#    ...done.
+#  + Done!
