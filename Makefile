@@ -13,6 +13,7 @@ setup:
 	@[ -f domains.txt ] || { echo; echo '*** Please symlink or create domains.txt' 2>&1; exit 1; }
 	install -d -o letsencrypt -g root -m 750 ./var
 	install -d -o letsencrypt -g root -m 755 /var/www/acme-challenge/.well-known/acme-challenge
+	chown -R letsencrypt:root ./var
 	@visudo -c >/dev/null
 	install -o root -g root -m 440 sudoers /etc/sudoers.d/letsencrypt
 	visudo -c >/dev/null
@@ -37,5 +38,6 @@ clone:
 
 renew:
 	./dehydrated -c -x
+	chown -R letsencrypt:root ./var
 
 .PHONY: setup install renew
