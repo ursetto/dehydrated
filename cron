@@ -1,1 +1,3 @@
+#!/bin/sh
+
 su - letsencrypt -c '/opt/letsencrypt/dehydrated/dehydrated -c'
